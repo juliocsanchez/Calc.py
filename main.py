@@ -6,93 +6,70 @@ janela.theme('DarkBlue1')
 
 layout_calculadora = [
     [janela.Text('Simple Calculator to one digit numbers', key='resultado')],
-    [janela.Button('+'), janela.Button('-'), janela.Button('x'),janela.Button('/'),],
-    [janela.Button('1'), janela.Button('2'),janela.Button('3'),janela.Button('4'),janela.Button('5')],
-    [janela.Button('6'), janela.Button('7'),janela.Button('8'),janela.Button('9'),janela.Button('0'), janela.Button('=')]
+    [janela.Button('+'), janela.Button('-'), janela.Button('x'), janela.Button('/'), ],
+    [janela.Button('1'), janela.Button('2'), janela.Button('3'), janela.Button('4'), janela.Button('5')],
+    [janela.Button('6'), janela.Button('7'), janela.Button('8'), janela.Button('9'), janela.Button('0'),
+     janela.Button('=')]
 
 ]
 
 window = janela.Window('Calculadora', layout_calculadora, resizable=True)
 
+# values started in 0
 resultado = 0
-botoes_clicados = []
-operacao_atual = None
-limpar = 0
+texto_digitado = ''
 
-while True:
-    event, values = window.read()
+while True:  # When the 'janela' is open...
 
-    botao_atual = window[event].get_text()
+    event, values = window.read()  # Declared variables for manipulation
 
-    if event != janela.WINDOW_CLOSED:
+    botao_atual = window[event].get_text()  # Capture the Strings in the visor of the calculator
 
-        if botao_atual == "1":
-            botoes_clicados.append(1)
+    if event == janela.WINDOW_CLOSED:  # If the 'janela' is close, the operation is down
+        break
 
-        elif botao_atual == "2":
-            botoes_clicados.append(2)
+    botao_clicado = window[event].get_text()  # Method for separate the number of '='
 
-        elif botao_atual == "3":
-            botoes_clicados.append(3)
+    if botao_clicado != '=':  # If the 'botao_clicado' it´s different of '=', he go add the task below
+        texto_digitado = texto_digitado + botao_clicado
+    else:
+        pass
 
-        elif botao_atual == "4":
-            botoes_clicados.append(4)
+    window['resultado'].update(texto_digitado) # Will type the numbers placed on the calculator display
 
-        elif botao_atual == "5":
-            botoes_clicados.append(5)
+    if window[event].get_text() == '=':
 
-        elif botao_atual == "6":
-            botoes_clicados.append(6)
+        for caracter in texto_digitado:  # Will get the String characters to get their value
 
-        elif botao_atual == "7":
-            botoes_clicados.append(7)
+            if caracter == '+':
+                arrays = texto_digitado.split('+')  # The method 'split()' broken the string to half the values. ['1','2']
+                x = arrays[0]
+                y = arrays[1]
 
-        elif botao_atual == "8":
-            botoes_clicados.append(8)
+                resultado = int(x) + int(y) # Forces String array to be Int
 
-        elif botao_atual == "9":
-            botoes_clicados.append(9)
+            if caracter == '-':
+                arrays = texto_digitado.split('-')
+                x = arrays[0]
+                y = arrays[1]
 
-        elif botao_atual == "0":
-            botoes_clicados.append(0)
+                resultado = int(x) - int(y)
 
-        elif botao_atual == "+":
-            operacao_atual = "+"
+            if caracter == 'x':
+                arrays = texto_digitado.split('x')
+                x = arrays[0]
+                y = arrays[1]
 
-        elif botao_atual == "C":
-            operacao_atual = "C"
+                resultado = int(x) * int(y)
 
-        ##########################
+            if caracter == '/':
+                arrays = texto_digitado.split('/')
+                x = arrays[0]
+                y = arrays[1]
 
-        elif botao_atual == "-":
-            operacao_atual = "-"
+                resultado = int(x) / int(y)
 
-        elif botao_atual == "x":
-            operacao_atual = "x"
+        window['resultado'].update(resultado) # After the operation, put the result on the calculator display
+        texto_digitado = '' # After the result, resets the 'texto_digitado'
 
-        elif botao_atual == "/":
-            operacao_atual = "/"
-
-        elif botao_atual == "=":
-            resultado = 0
-
-            for i in range(len(botoes_clicados) - 1):
-                x = botoes_clicados[i]
-
-                if operacao_atual == '+':
-                    resultado = x + botoes_clicados[i + 1]
-
-                if operacao_atual == "-":
-                    resultado = x - botoes_clicados[i + 1]
-
-                if operacao_atual == "x":
-                    resultado = x * botoes_clicados[i + 1]
-
-                if operacao_atual == "/":
-                    resultado = x / botoes_clicados[i + 1]
-
-
-            window['resultado'].update(value=resultado)
-            botoes_clicados = []
-            resultado = 0
-            operacao_atual = None
+window.close()
